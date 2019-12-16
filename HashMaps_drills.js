@@ -1,4 +1,3 @@
-/* eslint-disable strict */
 //Question One
 
 const HashMap = require(`./hashmap`);
@@ -24,20 +23,21 @@ function main() {
   // console.log(lotr.get('Hobbit'));
 
   // display(lotr);
-
+  
   //removeDupes('google');
   //removeDupes('google all that you think can think of');
 
-  console.log(palindrome('xxxe'));
-  console.log(palindrome('racecar'));
-  console.log(palindrome('dad'));
-  console.log(palindrome('abdbdba'));
-  console.log(palindrome('tattarrattat'));
+  // console.log(palindrome('xxxe'));
+  // console.log(palindrome('racecar'));
+  // console.log(palindrome('dad'));
+  // console.log(palindrome('abdbdba'));
+  // console.log(palindrome('tattarrattat'));
+  anagram(['east', 'cars', 'acre', 'arcs', 'teas', 'eats', 'race']);
 }
 
 function display(map) {
   for (let i = 0; i < map._hashTable.length; i++) {
-    if (map._hashTable[i]) console.log(map._hashTable[i]);
+    if (map._hashTable[i] && map._hashTable[i].DELETED === false) console.log(map._hashTable[i]);
   }
   console.log(map._capacity);
 }
@@ -58,6 +58,7 @@ main();
 //the main function to three, which increases the capacity by three times
 //once the number of items hits five.
 
+
 //Question 2
 //This function demonstrates what happens when keys are the same when
 //inserting into a hash map. The output at the end should read 20 and
@@ -72,7 +73,8 @@ main();
 // 0    1 2 3   4   5 6   7  8   9
 // ___|28|20|12|___|5|15|___|17|___|
 //      19            33
-//      10
+//      10               
+
 
 //Question 4
 
@@ -81,14 +83,13 @@ function removeDupes(input) {
   HashMap.MAX_LOAD_RATIO = 0.5;
   HashMap.SIZE_RATIO = 3;
   let newString = '';
-  for (let i = 0; i < input.length; i++) {
+  for(let i = 0; i < input.length; i++) {
     // if(!dupes.get(input[i])) {
     //   dupes.set(input[i]);
     //   newString = newString + input[i];
     // }
-    try {
-      dupes.get(input[i]);
-    } catch (error) {
+    try { dupes.get(input[i]); }
+    catch(error){
       dupes.set(input[i]);
       newString = newString + input[i];
     }
@@ -96,6 +97,8 @@ function removeDupes(input) {
   console.log(newString);
   return newString;
 }
+
+//Question 5
 
 function palindrome(input) {
   const palinCheck = new HashMap(input.length * 2);
@@ -124,3 +127,55 @@ function palindrome(input) {
 
   return false;
 }
+
+function anagram(input) {
+  const anagramCheck = new HashMap(input.length * 2);
+  HashMap.MAX_LOAD_RATIO = 0.5;
+  HashMap.SIZE_RATIO = 3;
+  let modInput = input;
+
+  for(let i = 0; i < input.length; i++) {
+    anagramCheck.set(input[i], [input[i]]);
+  }
+
+  for(let i = 0; i < modInput.length; i++) {
+    let newArray = [];
+    newArray.push(anagramCheck.get(modInput[i])[0]);
+    let anagrams = function(prefix, str) {
+      if(str.length <= 1 && prefix+str !== modInput[i]){
+        try{
+          anagramCheck.get(prefix+str);
+          newArray.push(prefix + str);
+          console.log('newArray: ' + newArray);
+          anagramCheck.set(modInput[i], newArray);
+          anagramCheck.delete(prefix+str);
+          modInput = modInput.filter(words => words !== prefix+str);
+        }
+        catch(error) { return; }
+      } else {
+        for(let i = 0; i < str.length; i++) {
+          let currentLetter = str.substring(i, i+1);
+          let previousLetters = str.substring(0, i);
+          let afterLetters = str.substring(i+1);
+          anagrams(prefix+currentLetter, previousLetters+afterLetters);
+        }
+      }
+    };
+    anagrams('', modInput[i]);
+  }
+  display(anagramCheck);
+}
+
+
+// function anagrams(prefix, str){
+//     if(str.length <= 1){
+//         console.log(`The anagram is ${prefix}${str}`);
+//     } else {
+//         for(let i=0; i<str.length; i++){
+//             let currentLetter = str.substring(i, i+1); 
+//             let previousLetters = str.substring(0,i);
+//             let afterLetters = str.substring(i+1);
+//             anagrams(prefix+currentLetter, previousLetters+afterLetters);
+//         }
+//     }
+// }
