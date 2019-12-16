@@ -30,8 +30,6 @@ class HashMap {
       value,
       DELETED: false
     };
-
-    if (this._hashTable[index].key === 'Hobbit') console.log(index);
   }
 
   delete(key) {
