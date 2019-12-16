@@ -1,3 +1,4 @@
+/* eslint-disable strict */
 //Question One
 
 const HashMap = require(`./hashmap`);
@@ -23,10 +24,15 @@ function main() {
   // console.log(lotr.get('Hobbit'));
 
   // display(lotr);
-  
-  removeDupes('google');
-  removeDupes('google all that you think can think of');
-  
+
+  //removeDupes('google');
+  //removeDupes('google all that you think can think of');
+
+  console.log(palindrome('xxxe'));
+  console.log(palindrome('racecar'));
+  console.log(palindrome('dad'));
+  console.log(palindrome('abdbdba'));
+  console.log(palindrome('tattarrattat'));
 }
 
 function display(map) {
@@ -52,7 +58,6 @@ main();
 //the main function to three, which increases the capacity by three times
 //once the number of items hits five.
 
-
 //Question 2
 //This function demonstrates what happens when keys are the same when
 //inserting into a hash map. The output at the end should read 20 and
@@ -67,8 +72,7 @@ main();
 // 0    1 2 3   4   5 6   7  8   9
 // ___|28|20|12|___|5|15|___|17|___|
 //      19            33
-//      10               
-
+//      10
 
 //Question 4
 
@@ -77,15 +81,14 @@ function removeDupes(input) {
   HashMap.MAX_LOAD_RATIO = 0.5;
   HashMap.SIZE_RATIO = 3;
   let newString = '';
-  for(let i = 0; i < input.length; i++) {
+  for (let i = 0; i < input.length; i++) {
     // if(!dupes.get(input[i])) {
     //   dupes.set(input[i]);
     //   newString = newString + input[i];
     // }
     try {
       dupes.get(input[i]);
-    }
-    catch(error){
+    } catch (error) {
       dupes.set(input[i]);
       newString = newString + input[i];
     }
@@ -94,3 +97,30 @@ function removeDupes(input) {
   return newString;
 }
 
+function palindrome(input) {
+  const palinCheck = new HashMap(input.length * 2);
+  HashMap.MAX_LOAD_RATIO = 0.5;
+  HashMap.SIZE_RATIO = 3;
+  let repeatCount = 0;
+  for (let i = 0; i < input.length; i++) {
+    console.log(input[i]);
+    try {
+      let val = palinCheck.get(input[i]);
+      if (val) repeatCount += 2;
+      else repeatCount++;
+      palinCheck.set(input[i], false);
+    } catch (error) {
+      palinCheck.set(input[i], true);
+    }
+  }
+
+  console.log(repeatCount);
+
+  if (input.length % 2 !== 0 && repeatCount === input.length - 1) {
+    return true;
+  } else if (repeatCount === input.length) {
+    return true;
+  }
+
+  return false;
+}
